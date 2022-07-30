@@ -21,8 +21,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import model.GRNReport;
 import model.MySQL;
-import model.Test;
-import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;

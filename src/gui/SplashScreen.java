@@ -4,9 +4,10 @@
  */
 package gui;
 
-import com.formdev.flatlaf.FlatLaf;
-import com.formdev.flatlaf.FlatLightLaf;
+import com.apple.eawt.Application;
 import com.formdev.flatlaf.IntelliJTheme;
+import java.awt.Image;
+import java.awt.Toolkit;
 
 /**
  *
@@ -19,6 +20,11 @@ public class SplashScreen extends javax.swing.JFrame {
      */
     public SplashScreen() {
         initComponents();
+
+        // Set Application  Icon
+        Application application = Application.getApplication();
+        Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/cart.png"));
+        application.setDockIconImage(image);
     }
 
     /**
@@ -121,12 +127,8 @@ public class SplashScreen extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        // Look & Feel
-//        FlatLightLaf.setup();
-
         try {
             IntelliJTheme.setup(Home.class.getResourceAsStream("/resources/arc-theme.theme.json"));
-                    
         } catch (Exception e) {
         }
 
@@ -141,36 +143,36 @@ public class SplashScreen extends javax.swing.JFrame {
                     @Override
                     public void run() {
                         try {
-                            
+
                             for (int i = 1; i <= 100; i++) {
                                 ss.jProgressBar1.setValue(i);
                                 ss.jLabel4.setText(String.valueOf(i) + " %");
-                                
-                                if(i == 10) {
+
+                                if (i == 10) {
                                     ss.jLabel5.setText("Turning On Modules...");
-                                }else if(i == 20) {
+                                } else if (i == 20) {
                                     ss.jLabel5.setText("Loading Modules...");
-                                }else if(i == 50) {
+                                } else if (i == 50) {
                                     ss.jLabel5.setText("Connecting to Database...");
-                                }else if(i == 70) {
+                                } else if (i == 70) {
                                     ss.jLabel5.setText("Connection Successfull !");
-                                }else if(i == 80) {
+                                } else if (i == 80) {
                                     ss.jLabel5.setText("Launching Application...");
                                 }
                                 Thread.sleep(80);
                             }
-                            
+
                             Thread.sleep(200);
                             ss.dispose();
                             new SignIn().setVisible(true);
-                            
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        
+
                     }
                 };
-                
+
                 t.start();
             }
         });

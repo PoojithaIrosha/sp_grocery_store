@@ -311,6 +311,7 @@ public class ManageStock extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -606,6 +607,16 @@ public class ManageStock extends javax.swing.JPanel {
             }
         });
 
+        jButton3.setBackground(new java.awt.Color(255, 190, 0));
+        jButton3.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        jButton3.setText("Print Expired Stocks");
+        jButton3.setBorderPainted(false);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -617,6 +628,8 @@ public class ManageStock extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton3)
+                        .addGap(18, 18, 18)
                         .addComponent(jButton2))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1))
@@ -628,7 +641,8 @@ public class ManageStock extends javax.swing.JPanel {
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -740,7 +754,7 @@ public class ManageStock extends javax.swing.JPanel {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         try {
-            ResultSet stockRs = MySQL.search("SELECT DISTINCT `stock`.`id`, `product`.`id`, `category`.`name`,`brand`.`name`, `product`.`name`, `stock`.`quantity`, `grn_item`.`buying_price`, `stock`.`selling_price`, `stock`.`mfd`,`stock`.`exd` FROM `stock` INNER JOIN `grn_item` ON `stock`.`id`=`grn_item`.`stock_id` INNER JOIN `product` ON `stock`.`product_id`=`product`.`id` INNER JOIN `brand` ON `product`.brand_id=`brand`.`id` INNER JOIN `category` ON `product`.`category_id`=`category`.`id` ORDER BY `stock`.`id` ASC");
+            ResultSet stockRs = MySQL.search("SELECT DISTINCT `stock`.`id`, `product`.`id`, `category`.`name`,`brand`.`name`, `product`.`name`, `stock`.`quantity`, `grn_item`.`buying_price`, `stock`.`selling_price`, `stock`.`mfd`,`stock`.`exd` FROM `stock` INNER JOIN `grn_item` ON `stock`.`id`=`grn_item`.`stock_id` INNER JOIN `product` ON `stock`.`product_id`=`product`.`id` INNER JOIN `brand` ON `product`.brand_id=`brand`.`id` INNER JOIN `category` ON `product`.`category_id`=`category`.`id` WHERE `stock`.`exd` > CURDATE() ORDER BY `stock`.`id` ASC");
 
             Vector beans = new Vector();
             while (stockRs.next()) {
@@ -759,10 +773,32 @@ public class ManageStock extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        try {
+            ResultSet stockRs = MySQL.search("SELECT DISTINCT `stock`.`id`, `product`.`id`, `category`.`name`,`brand`.`name`, `product`.`name`, `stock`.`quantity`, `grn_item`.`buying_price`, `stock`.`selling_price`, `stock`.`mfd`,`stock`.`exd` FROM `stock` INNER JOIN `grn_item` ON `stock`.`id`=`grn_item`.`stock_id` INNER JOIN `product` ON `stock`.`product_id`=`product`.`id` INNER JOIN `brand` ON `product`.brand_id=`brand`.`id` INNER JOIN `category` ON `product`.`category_id`=`category`.`id` WHERE `stock`.`exd` < CURDATE() ORDER BY `stock`.`id` ASC");
+
+            Vector beans = new Vector();
+            while (stockRs.next()) {
+                beans.add(new StockReport(stockRs.getString("stock.id"), stockRs.getString("product.name"), stockRs.getString("brand.name"), stockRs.getString("stock.selling_price"), stockRs.getString("stock.quantity"), stockRs.getString("stock.exd")));
+            }
+
+            InputStream inputStream = ManageStock.class.getResourceAsStream("/reports/sp_expired_stock.jasper");
+            HashMap parameters = new HashMap();
+            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(beans);
+
+            JasperPrint jp = JasperFillManager.fillReport(inputStream, parameters, dataSource);
+            JasperViewer.viewReport(jp, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;

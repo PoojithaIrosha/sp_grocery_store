@@ -71,7 +71,7 @@
 						<font fontName=".AppleSystemUIFont" size="36" isBold="true"/>
 						<paragraph lineSpacingSize="1.0" spacingAfter="1"/>
 					</textElement>
-					<text><![CDATA[L Q P]]></text>
+					<text><![CDATA[STOCK]]></text>
 				</staticText>
 				<frame>
 					<reportElement mode="Opaque" x="0" y="130" width="339" height="37" backcolor="#2E7CFF" uuid="d60fe046-142b-4ea8-bd7e-9318f5165f6f"/>

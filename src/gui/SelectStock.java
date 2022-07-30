@@ -40,7 +40,7 @@ public class SelectStock extends javax.swing.JDialog {
 
     public void loadStock() {
         try {
-            ResultSet rs = MySQL.search("SELECT DISTINCT `stock`.`id`, `product`.`id`, `category`.`name`,`brand`.`name`, `product`.`name`, `stock`.`quantity`, `grn_item`.`buying_price`, `stock`.`selling_price`, `stock`.`mfd`,`stock`.`exd` FROM `stock` INNER JOIN `grn_item` ON `stock`.`id`=`grn_item`.`stock_id` INNER JOIN `product` ON `stock`.`product_id`=`product`.`id` INNER JOIN `brand` ON `product`.brand_id=`brand`.`id` INNER JOIN `category` ON `product`.`category_id`=`category`.`id` ORDER BY `stock`.`id` ASC");
+            ResultSet rs = MySQL.search("SELECT DISTINCT `stock`.`id`, `product`.`id`, `category`.`name`,`brand`.`name`, `product`.`name`, `stock`.`quantity`, `grn_item`.`buying_price`, `stock`.`selling_price`, `stock`.`mfd`,`stock`.`exd` FROM `stock` INNER JOIN `grn_item` ON `stock`.`id`=`grn_item`.`stock_id` INNER JOIN `product` ON `stock`.`product_id`=`product`.`id` INNER JOIN `brand` ON `product`.brand_id=`brand`.`id` INNER JOIN `category` ON `product`.`category_id`=`category`.`id` WHERE `stock`.`exd` > CURDATE() ORDER BY `stock`.`id` ASC");
 
             DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
             dtm.setRowCount(0);
@@ -178,10 +178,10 @@ public class SelectStock extends javax.swing.JDialog {
             String whereQuery = "";
 
             for (int i = 0; i < queryVector.size(); i++) {
-                if (i == 0) {
-                    whereQuery += "WHERE";
+                if(i == 0) {
+                    whereQuery += "AND";
                 }
-
+                
                 whereQuery += " ";
                 whereQuery += queryVector.get(i);
                 whereQuery += " ";
@@ -190,8 +190,11 @@ public class SelectStock extends javax.swing.JDialog {
                     whereQuery += "AND";
                 }
             }
+            
+            
+            System.out.println(whereQuery);
 
-            ResultSet rs = MySQL.search("SELECT DISTINCT `stock`.`id`, `product`.`id`, `category`.`name`,`brand`.`name`, `product`.`name`, `stock`.`quantity`, `grn_item`.`buying_price`, `stock`.`selling_price`, `stock`.`mfd`,`stock`.`exd` FROM `stock` INNER JOIN `grn_item` ON `stock`.`id`=`grn_item`.`stock_id` INNER JOIN `product` ON `stock`.`product_id`=`product`.`id` INNER JOIN `brand` ON `product`.brand_id=`brand`.`id` INNER JOIN `category` ON `product`.`category_id`=`category`.`id` " + whereQuery + " ORDER BY " + sortQuery + " ");
+            ResultSet rs = MySQL.search("SELECT DISTINCT `stock`.`id`, `product`.`id`, `category`.`name`,`brand`.`name`, `product`.`name`, `stock`.`quantity`, `grn_item`.`buying_price`, `stock`.`selling_price`, `stock`.`mfd`,`stock`.`exd` FROM `stock` INNER JOIN `grn_item` ON `stock`.`id`=`grn_item`.`stock_id` INNER JOIN `product` ON `stock`.`product_id`=`product`.`id` INNER JOIN `brand` ON `product`.brand_id=`brand`.`id` INNER JOIN `category` ON `product`.`category_id`=`category`.`id` WHERE `stock`.`exd` > CURDATE()" + whereQuery + " ORDER BY " + sortQuery + " ");
 
             DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
             dtm.setRowCount(0);
