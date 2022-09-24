@@ -38,7 +38,6 @@ public class Dashboard extends javax.swing.JPanel {
         loadMostSellingProduct();
         calculateDailyIncome();
         loadLowQtyProducts();
-
     }
 
     public void calculateDailyIncome() {
@@ -67,12 +66,12 @@ public class Dashboard extends javax.swing.JPanel {
                 }
             }
 
-            if(profit == 0) {
+            if (profit == 0) {
                 jLabel24.setText("No Sales Today");
-            }else {
+            } else {
                 jLabel24.setText("Rs." + df.format(profit));
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -127,7 +126,7 @@ public class Dashboard extends javax.swing.JPanel {
             }
             jLabel3.setText(String.valueOf(noOfSales));
         } catch (Exception ex) {
-            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 
@@ -152,7 +151,7 @@ public class Dashboard extends javax.swing.JPanel {
             }
             jLabel5.setText(String.valueOf(noOfStock));
         } catch (Exception ex) {
-            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 
@@ -165,7 +164,7 @@ public class Dashboard extends javax.swing.JPanel {
             }
             jLabel7.setText(String.valueOf(noOfSuppliers));
         } catch (Exception ex) {
-            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 
@@ -654,12 +653,12 @@ public class Dashboard extends javax.swing.JPanel {
                     beans.add(new LQPReport(rs.getString("stock.id"), rs.getString("product.name"), rs.getString("brand.name"), rs.getString("stock.selling_price"), rs.getString("stock.quantity")));
                 }
             }
-            
+
             InputStream filePath = getClass().getResourceAsStream("/reports/sp_lqp.jasper");
-            
+
             HashMap parameters = new HashMap();
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(beans);
-            
+
             JasperPrint jp = JasperFillManager.fillReport(filePath, parameters, dataSource);
             JasperViewer.viewReport(jp, false);
         } catch (Exception e) {

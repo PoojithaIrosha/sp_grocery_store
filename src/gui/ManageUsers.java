@@ -40,24 +40,24 @@ public class ManageUsers extends javax.swing.JPanel {
      */
     public ManageUsers() {
         initComponents();
-        
+
         jTable1.setComponentPopupMenu(jPopupMenu1);
         jTabbedPane1.setEnabledAt(1, false);
         loadUsers();
         setSelectionListner();
         loadUserTypes();
     }
-    
+
     public void loadUserTypes() {
         try {
             ResultSet rs = MySQL.search("SELECT * FROM `user_type`");
-            
+
             Vector v = new Vector();
             v.add("Select");
             while (rs.next()) {
                 v.add(rs.getString("type_name"));
             }
-            
+
             DefaultComboBoxModel dcm = new DefaultComboBoxModel(v);
             jComboBox1.setModel(dcm);
             jComboBox3.setModel(dcm);
@@ -65,7 +65,7 @@ public class ManageUsers extends javax.swing.JPanel {
             e.printStackTrace();
         }
     }
-    
+
     public void clearFields() {
         jTextField1.setText("");
         jTextField2.setText("");
@@ -73,29 +73,29 @@ public class ManageUsers extends javax.swing.JPanel {
         jTextField3.setText("");
         jComboBox1.setSelectedIndex(0);
     }
-    
+
     public void setSelectionListner() {
-        
+
         jTable1.getSelectionModel().addListSelectionListener((e) -> {
             int selectedRow = jTable1.getSelectedRow();
-            
+
             if (selectedRow == 0 && jTable1.getValueAt(selectedRow, 5).toString().equals("Owner")) {
                 jButton4.setEnabled(false);
             } else {
                 jButton4.setEnabled(true);
             }
         });
-        
+
     }
-    
+
     public void loadUsers() {
-        
+
         try {
             ResultSet rs = MySQL.search("SELECT * FROM `user` INNER JOIN `user_type` ON `user`.`user_type_id` = `user_type`.`id` INNER JOIN `user_status` ON `user`.`user_status_id` = `user_status`.`id` ORDER BY `user_status`.`status_name` ASC");
-            
+
             DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
             dtm.setRowCount(0);
-            
+
             while (rs.next()) {
                 Vector v = new Vector();
                 v.add(rs.getString("user.id"));
@@ -106,23 +106,23 @@ public class ManageUsers extends javax.swing.JPanel {
                 v.add(rs.getString("user_type.type_name"));
                 v.add(rs.getString("user_status.status_name"));
                 dtm.addRow(v);
-                
+
             }
-            
+
             jTable1.setModel(dtm);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
     }
-    
+
     public void searchUsers() {
         String searchBy = jComboBox2.getSelectedItem().toString().toLowerCase();
         String text = jTextField4.getText();
-        
+
         String query = "";
         if (!text.isEmpty()) {
-            
+
             switch (searchBy) {
                 case "name":
                     query = "SELECT * FROM `user` INNER JOIN `user_type` ON `user`.`user_type_id` = `user_type`.`id` INNER JOIN `user_status` ON `user`.`user_status_id` = `user_status`.`id` WHERE `user`.`name` LIKE '%" + text + "%' ORDER BY `user`.`id` ASC";
@@ -140,13 +140,13 @@ public class ManageUsers extends javax.swing.JPanel {
         } else {
             query = "SELECT * FROM `user` INNER JOIN `user_type` ON `user`.`user_type_id` = `user_type`.`id` INNER JOIN `user_status` ON `user`.`user_status_id` = `user_status`.`id` ORDER BY `user_status`.`status_name` ASC";
         }
-        
+
         try {
             ResultSet rs = MySQL.search(query);
-            
+
             DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
             dtm.setRowCount(0);
-            
+
             while (rs.next()) {
                 Vector v = new Vector();
                 v.add(rs.getString("user.id"));
@@ -157,9 +157,9 @@ public class ManageUsers extends javax.swing.JPanel {
                 v.add(rs.getString("user_type.type_name"));
                 v.add(rs.getString("user_status.status_name"));
                 dtm.addRow(v);
-                
+
             }
-            
+
             jTable1.setModel(dtm);
         } catch (Exception e) {
             e.printStackTrace();
@@ -662,7 +662,7 @@ public class ManageUsers extends javax.swing.JPanel {
         String password = jPasswordField1.getText();
         String contactNo = jTextField3.getText();
         String userType = jComboBox1.getSelectedItem().toString();
-        
+
         if (name.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter the name", "Warning", JOptionPane.WARNING_MESSAGE);
         } else if (username.isEmpty()) {
@@ -684,25 +684,25 @@ public class ManageUsers extends javax.swing.JPanel {
                     ResultSet userTypeRs = MySQL.search("SELECT * FROM `user_type` WHERE `type_name`='" + userType + "'");
                     userTypeRs.next();
                     String userTypeId = userTypeRs.getString("id");
-                    
+
                     SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd hh:mm:ss");
 
                     // Insert user details
                     MySQL.iud("INSERT INTO `user`(`name`, `username`,`password`,`contact_no`,`user_type_id`, `registered_date`) VALUES ('" + name + "', '" + username + "', '" + password + "', '" + contactNo + "', '" + userTypeId + "','" + sdf.format(new Date()) + "')");
-                    
+
                     clearFields();
-                    
+
                     Home home = (Home) SwingUtilities.getWindowAncestor(this);
                     home.jPanel4.removeAll();
                     home.jPanel4.add(new ManageUsers());
                     home.jPanel4.revalidate();
                     home.jPanel4.repaint();
-                    
+
                     JOptionPane.showMessageDialog(this, "New user created successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(this, "User has already registered", "Warning", JOptionPane.WARNING_MESSAGE);
                 }
-                
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -712,20 +712,20 @@ public class ManageUsers extends javax.swing.JPanel {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
         int selectedRow = jTable1.getSelectedRow();
-        
+
         if (selectedRow != -1) {
             String uid = jTable1.getValueAt(selectedRow, 0).toString();
             String status = jTable1.getValueAt(selectedRow, 6).toString();
-            
+
             if (status.equals("Active")) {
                 MySQL.iud("UPDATE `user` SET `user_status_id` = '2' WHERE `id` = '" + uid + "'");
             } else {
                 MySQL.iud("UPDATE `user` SET `user_status_id` = '1' WHERE `id` = '" + uid + "'");
             }
-            
+
             loadUsers();
             JOptionPane.showMessageDialog(this, "User status updated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-            
+
         } else {
             JOptionPane.showMessageDialog(this, "Please select a user first", TOOL_TIP_TEXT_KEY, HEIGHT);
         }
@@ -734,23 +734,23 @@ public class ManageUsers extends javax.swing.JPanel {
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // TODO add your handling code here:
         int selectedRow = jTable1.getSelectedRow();
-        
+
         if (selectedRow != -1) {
-            
+
             String uid = jTable1.getValueAt(selectedRow, 0).toString();
             String name = jTable1.getValueAt(selectedRow, 1).toString();
             String username = jTable1.getValueAt(selectedRow, 2).toString();
             String password = jTable1.getValueAt(selectedRow, 3).toString();
             String contactNo = jTable1.getValueAt(selectedRow, 4).toString();
             String userType = jTable1.getValueAt(selectedRow, 5).toString();
-            
+
             jTextField8.setText(uid);
             jTextField5.setText(name);
             jTextField6.setText(username);
             jPasswordField2.setText(password);
             jTextField7.setText(contactNo);
             jComboBox3.setSelectedItem(userType);
-            
+
             jTabbedPane1.setEnabledAt(1, true);
             jTabbedPane1.setSelectedIndex(1);
         }
@@ -760,7 +760,7 @@ public class ManageUsers extends javax.swing.JPanel {
     private void jTextField3KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField3KeyTyped
         // TODO add your handling code here:
         String text = jTextField3.getText() + evt.getKeyChar();
-        
+
         if (text.length() == 1) {
             if (!text.equals("0")) {
                 evt.consume();
@@ -803,7 +803,7 @@ public class ManageUsers extends javax.swing.JPanel {
 
     private void jTextField7KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField7KeyTyped
         String text = jTextField7.getText() + evt.getKeyChar();
-        
+
         if (text.length() == 1) {
             if (!text.equals("0")) {
                 evt.consume();
@@ -857,11 +857,11 @@ public class ManageUsers extends javax.swing.JPanel {
 
                 // Insert user details
                 MySQL.iud("UPDATE `user` SET `name`='" + name + "', `username`='" + username + "', `password`='" + password + "', `contact_no`='" + contactNo + "', `user_type_id`='" + userTypeId + "' WHERE `id` = '" + uid + "'");
-                
+
                 loadUsers();
-                
+
                 JOptionPane.showMessageDialog(this, "User updated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-                
+
                 jTabbedPane1.setEnabledAt(1, false);
                 jTabbedPane1.setSelectedIndex(0);
             } catch (Exception e) {
@@ -878,7 +878,7 @@ public class ManageUsers extends javax.swing.JPanel {
         jPasswordField2.setText("");
         jTextField7.setText("");
         jComboBox3.setSelectedItem("Select");
-        
+
         jTabbedPane1.setEnabledAt(1, false);
         jTabbedPane1.setSelectedIndex(0);
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -888,16 +888,16 @@ public class ManageUsers extends javax.swing.JPanel {
             // TODO add your handling code here:
             ResultSet userRs = MySQL.search("SELECT * FROM `user` INNER JOIN `user_type` ON `user`.`user_type_id` = `user_type`.`id` INNER JOIN `user_status` ON `user`.`user_status_id` = `user_status`.`id`");
             Vector beans = new Vector();
-            while(userRs.next()) {
+            while (userRs.next()) {
                 String rdate = userRs.getString("user.registered_date");
                 String[] registeredDateTime = rdate.split(" ");
                 beans.add(new UserReport(userRs.getString("user.id"), userRs.getString("user.name"), userRs.getString("user.contact_no"), userRs.getString("user_type.type_name"), userRs.getString("user_status.status_name"), registeredDateTime[0]));
             }
-            
+
             InputStream inputStream = ManageUsers.class.getResourceAsStream("/reports/sp_user.jasper");
             HashMap parameters = new HashMap();
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(beans);
-            
+
             JasperPrint jp = JasperFillManager.fillReport(inputStream, parameters, dataSource);
             JasperViewer.viewReport(jp, false);
         } catch (Exception ex) {

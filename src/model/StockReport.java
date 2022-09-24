@@ -73,7 +73,4 @@ public class StockReport {
         this.exd = exd;
     }
 
-    
-    
-    
 }

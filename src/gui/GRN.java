@@ -31,7 +31,7 @@ import net.sf.jasperreports.view.JasperViewer;
  * @author poojithairosha
  */
 public class GRN extends javax.swing.JPanel {
-    
+
     DecimalFormat df = new DecimalFormat("0.00");
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -46,7 +46,7 @@ public class GRN extends javax.swing.JPanel {
         loadPaymentMethods();
         loadGrns();
     }
-    
+
     public void updateTotal() {
         double total = 0;
         for (int i = 0; i < jTable1.getRowCount(); i++) {
@@ -54,7 +54,7 @@ public class GRN extends javax.swing.JPanel {
         }
         jTextField10.setText(String.valueOf(total));
     }
-    
+
     public void clearFields() {
         // Product
         jTextField3.setText("None");
@@ -68,31 +68,31 @@ public class GRN extends javax.swing.JPanel {
         jDateChooser1.setDate(null);
         jDateChooser2.setDate(null);
     }
-    
+
     public void loadPaymentMethods() {
         try {
             ResultSet paymentTypeRs = MySQL.search("SELECT * FROM `payment_type`");
-            
+
             Vector v = new Vector();
             v.add("Select");
-            
+
             while (paymentTypeRs.next()) {
                 v.add(paymentTypeRs.getString("name"));
             }
-            
+
             DefaultComboBoxModel dcbm = new DefaultComboBoxModel(v);
             jComboBox1.setModel(dcbm);
-            
+
         } catch (Exception e) {
         }
     }
-    
+
     public void loadGrns() {
         try {
             ResultSet grn_rs = MySQL.search("SELECT * FROM `grn` INNER JOIN `grn_payment` ON `grn_payment`.`grn_id` = `grn`.`id` INNER JOIN `supplier` ON `grn`.`supplier_id` = supplier.`id` INNER JOIN `payment_type` ON `grn_payment`.`payment_type_id` = `payment_type`.`id`");
             DefaultTableModel dtm = (DefaultTableModel) jTable2.getModel();
             dtm.setRowCount(0);
-            
+
             while (grn_rs.next()) {
                 Vector v = new Vector();
                 v.add(grn_rs.getString("grn.id"));
@@ -102,25 +102,25 @@ public class GRN extends javax.swing.JPanel {
 
                 // Calculate Total Price
                 double price = Double.parseDouble(grn_rs.getString("grn_payment.payment")) - Double.parseDouble(grn_rs.getString("grn_payment.balance"));
-                
+
                 v.add(price);
                 v.add(grn_rs.getString("grn_payment.payment"));
                 v.add(grn_rs.getString("grn_payment.balance"));
                 dtm.addRow(v);
             }
-            
+
             jTable2.setModel(dtm);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     public void searchGrns(String text) {
         try {
             ResultSet grn_rs = MySQL.search("SELECT * FROM `grn` INNER JOIN `grn_payment` ON `grn_payment`.`grn_id` = `grn`.`id` INNER JOIN `supplier` ON `grn`.`supplier_id` = supplier.`id` INNER JOIN `payment_type` ON `grn_payment`.`payment_type_id` = `payment_type`.`id` WHERE `grn`.`date_time` LIKE '%" + text + "%'");
             DefaultTableModel dtm = (DefaultTableModel) jTable2.getModel();
             dtm.setRowCount(0);
-            
+
             while (grn_rs.next()) {
                 Vector v = new Vector();
                 v.add(grn_rs.getString("grn.id"));
@@ -130,13 +130,13 @@ public class GRN extends javax.swing.JPanel {
 
                 // Calculate Total Price
                 double price = Double.parseDouble(grn_rs.getString("grn_payment.payment")) - Double.parseDouble(grn_rs.getString("grn_payment.balance"));
-                
+
                 v.add(price);
                 v.add(grn_rs.getString("grn_payment.payment"));
                 v.add(grn_rs.getString("grn_payment.balance"));
                 dtm.addRow(v);
             }
-            
+
             jTable2.setModel(dtm);
         } catch (Exception e) {
             e.printStackTrace();
@@ -715,7 +715,7 @@ public class GRN extends javax.swing.JPanel {
         String sellingPrice = jTextField9.getText();
         Date mfd = jDateChooser1.getDate();
         Date exd = jDateChooser2.getDate();
-        
+
         if (supplierId.equals("None")) {
             JOptionPane.showMessageDialog(this, "Please select a supplier", "Warning", JOptionPane.WARNING_MESSAGE);
         } else if (productId.equals("None")) {
@@ -739,30 +739,30 @@ public class GRN extends javax.swing.JPanel {
         } else {
             boolean isFound = false;
             int foundRow = -1;
-            
+
             for (int i = 0; i < jTable1.getRowCount(); i++) {
                 String id = jTable1.getValueAt(i, 0).toString();
-                
+
                 if (id.equals(productId)) {
                     isFound = true;
                     foundRow = i;
                     break;
                 }
             }
-            
+
             if (isFound) {
                 int option = JOptionPane.showConfirmDialog(this, "This product is already added to the grn. Do you want to update the quantity?", "Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-                
+
                 if (option == JOptionPane.YES_OPTION) {
                     int currentQty = Integer.parseInt(jTable1.getValueAt(foundRow, 4).toString());
                     int newQty = currentQty + Integer.parseInt(qty);
-                    
+
                     jTable1.setValueAt(newQty, foundRow, 4);
                     jTable1.setValueAt(buyingPrice, foundRow, 5);
-                    
+
                     double newItemTotal = newQty * Double.parseDouble(buyingPrice);
                     jTable1.setValueAt(newItemTotal, foundRow, 9);
-                    
+
                     updateTotal();
                 }
                 clearFields();
@@ -772,36 +772,36 @@ public class GRN extends javax.swing.JPanel {
                 v.add(jTextField4.getText());
                 v.add(jTextField6.getText());
                 v.add(jTextField5.getText());
-                
+
                 v.add(qty);
                 v.add(buyingPrice);
                 v.add(sellingPrice);
                 v.add(sdf.format(mfd));
                 v.add(sdf.format(exd));
-                
+
                 double itemTotal = Integer.parseInt(qty) * Double.parseDouble(buyingPrice);
                 v.add(df.format(itemTotal));
-                
+
                 DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
                 dtm.addRow(v);
                 jTable1.setModel(dtm);
-                
+
                 updateTotal();
                 clearFields();
                 JOptionPane.showMessageDialog(this, "Product added to the GRN", "Success", JOptionPane.INFORMATION_MESSAGE);
             }
-            
+
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
         if (evt.getClickCount() == 2) {
-            
+
             DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
-            
+
             int option = JOptionPane.showConfirmDialog(this, "Do you want to remove this product from grn", "Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-            
+
             if (option == JOptionPane.YES_OPTION) {
                 int selectedRow = jTable1.getSelectedRow();
                 dtm.removeRow(selectedRow);
@@ -816,7 +816,7 @@ public class GRN extends javax.swing.JPanel {
         // TODO add your handling code here:
         String qty = jTextField7.getText();
         String text = qty + evt.getKeyChar();
-        
+
         if (!Pattern.compile("[1-9][0-9]*").matcher(text).matches()) {
             evt.consume();
         }
@@ -826,7 +826,7 @@ public class GRN extends javax.swing.JPanel {
         // TODO add your handling code here:
         String price = jTextField8.getText();
         String text = price + evt.getKeyChar();
-        
+
         if (!Pattern.compile("(0|0[.]|0[.][0-9]{0,2})|([1-9][0-9]*[.]?[0-9]{0,2})").matcher(text).matches()) {
             evt.consume();
         }
@@ -836,7 +836,7 @@ public class GRN extends javax.swing.JPanel {
         // TODO add your handling code here:
         String price = jTextField9.getText();
         String text = price + evt.getKeyChar();
-        
+
         if (!Pattern.compile("(0|0[.]|0[.][0-9]{0,2})|([1-9][0-9]*[.]?[0-9]{0,2})").matcher(text).matches()) {
             evt.consume();
         }
@@ -846,7 +846,7 @@ public class GRN extends javax.swing.JPanel {
         // TODO add your handling code here:
         String price = jTextField11.getText();
         String text = price + evt.getKeyChar();
-        
+
         if (!Pattern.compile("(0|0[.]|0[.][0-9]{0,2})|([1-9][0-9]*[.]?[0-9]{0,2})").matcher(text).matches()) {
             evt.consume();
         }
@@ -866,7 +866,7 @@ public class GRN extends javax.swing.JPanel {
         // TODO add your handling code here:
         String payment = jTextField11.getText();
         String paymentMethod = jComboBox1.getSelectedItem().toString();
-        
+
         if (jTable1.getRowCount() == 0) {
             JOptionPane.showMessageDialog(this, "Please add products ", "Warning", JOptionPane.WARNING_MESSAGE);
         } else if (paymentMethod.equals("Select")) {
@@ -878,10 +878,10 @@ public class GRN extends javax.swing.JPanel {
             // GRN INSERT
             String supplierId = jTextField1.getText();
             String currentDate = sdf2.format(new Date());
-            
+
             String uniqueId = UUID.randomUUID().toString();
             String userId = SignIn.userId;
-            
+
             MySQL.iud("INSERT INTO `grn`(`date_time`,`supplier_id`, `user_id`,`unique_id`) VALUES ('" + currentDate + "', '" + supplierId + "', '" + userId + "', '" + uniqueId + "')");
             // GRN INSERT
 
@@ -890,13 +890,13 @@ public class GRN extends javax.swing.JPanel {
                 ResultSet grnRs = MySQL.search("SELECT * FROM `grn` WHERE `unique_id` ='" + uniqueId + "'");
                 grnRs.next();
                 String grnId = grnRs.getString("id");
-                
+
                 String balance = jTextField12.getText();
-                
+
                 ResultSet paymentTypeRs = MySQL.search("SELECT * FROM `payment_type` WHERE `name` = '" + paymentMethod + "'");
                 paymentTypeRs.next();
                 String paymentTypeId = paymentTypeRs.getString("id");
-                
+
                 MySQL.iud("INSERT INTO `grn_payment`(`payment`,`balance`,`payment_type_id`,`grn_id`) VALUES ('" + payment + "', '" + balance + "', '" + paymentTypeId + "', '" + grnId + "')");
                 // GRN PAYMENT ITEM
 
@@ -914,31 +914,31 @@ public class GRN extends javax.swing.JPanel {
                     String productName = jTable1.getValueAt(i, 1).toString();
                     String category = jTable1.getValueAt(i, 2).toString();
                     String brand = jTable1.getValueAt(i, 3).toString();
-                    
+
                     v.add(new GRNReport(productId, productName, buyingPrice, quantity, total));
 
                     // STOCK
                     ResultSet stockRs = MySQL.search("SELECT * FROM `stock` WHERE `product_id` = '" + productId + "' AND `selling_price`='" + sellingPrice + "' AND `mfd` = '" + mfd + "' AND `exd` = '" + exd + "' ");
-                    
+
                     {
                         String stockId;
-                        
+
                         if (stockRs.next()) {
                             // UDATE
                             stockId = stockRs.getString("id");
                             String stockQty = stockRs.getString("quantity");
-                            
+
                             int updatedQty = Integer.parseInt(stockQty) + +Integer.parseInt(quantity);
                             MySQL.iud("UPDATE `stock` SET `quantity`='" + updatedQty + "' WHERE `id`='" + stockId + "'");
                         } else {
                             // INSERT
                             MySQL.iud("INSERT INTO `stock`(`product_id`, `quantity`, `selling_price`, `mfd`,`exd`) VALUES ('" + productId + "', '" + quantity + "', '" + sellingPrice + "', '" + mfd + "', '" + exd + "') ");
-                            
+
                             ResultSet stockRs2 = MySQL.search("SELECT * FROM `stock` WHERE `product_id` = '" + productId + "' AND `selling_price`='" + sellingPrice + "' AND `mfd` = '" + mfd + "' AND `exd` = '" + exd + "' ");
                             stockRs2.next();
                             stockId = stockRs2.getString("id");
                         }
-                        
+
                         MySQL.iud("INSERT INTO `grn_item`(`quantity`,`buying_price`,`stock_id`,`grn_id`) VALUES ('" + quantity + "', '" + buyingPrice + "', '" + stockId + "', '" + grnId + "')");
                     }
                     // STOCK
@@ -950,10 +950,10 @@ public class GRN extends javax.swing.JPanel {
                 // Parameters
                 HashMap parameters = new HashMap();
                 parameters.put("Parameter1", grnId);
-                
+
                 ResultSet supplierRs = MySQL.search("SELECT * FROM `supplier` INNER JOIN `company_branch` ON `supplier`.`company_branch_id` = `company_branch`.`id` INNER JOIN `company` ON `company_branch`.`company_id` = `company`.`id` WHERE `supplier`.`id` = '" + supplierId + "'");
                 supplierRs.next();
-                
+
                 parameters.put("Parameter2", jTextField10.getText());// Total
                 parameters.put("Parameter3", jTextField11.getText());// Payment
                 parameters.put("Parameter4", jTextField12.getText());// Balance
@@ -962,9 +962,9 @@ public class GRN extends javax.swing.JPanel {
                 parameters.put("Parameter7", supplierRs.getString("supplier.contact_no"));// S Contact No
 
                 JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(v);
-                
+
                 clearFields();
-                
+
                 jTextField1.setText("None");
                 jTextField2.setText("None");
                 jTextField10.setText("0.00");
@@ -973,10 +973,10 @@ public class GRN extends javax.swing.JPanel {
                 jTextField12.setText("0.00");
                 jTextField12.setBackground(new Color(242, 242, 242));
                 jComboBox1.setSelectedIndex(0);
-                
+
                 DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
                 dtm.setRowCount(0);
-                
+
                 JOptionPane.showMessageDialog(this, "New GRN created", "Success", JOptionPane.INFORMATION_MESSAGE);
                 JasperPrint jp = JasperFillManager.fillReport(report, parameters, dataSource);
                 JasperViewer.viewReport(jp, false);
@@ -985,7 +985,7 @@ public class GRN extends javax.swing.JPanel {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            
+
         }
 
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -995,20 +995,20 @@ public class GRN extends javax.swing.JPanel {
         if (jTextField11.getText().isEmpty()) {
             jTextField12.setText("0.00");
             jTextField12.setForeground(Color.BLACK);
-            
+
         } else {
-            
+
             String total = jTextField10.getText();
             String payment = jTextField11.getText();
-            
+
             double balance = Double.parseDouble(payment) - Double.parseDouble(total);
-            
+
             if (balance < 0) {
                 jTextField12.setBackground(Color.RED);
             } else {
                 jTextField12.setBackground(Color.GREEN);
             }
-            
+
             jTextField12.setText(String.valueOf(df.format(balance)));
         }
     }//GEN-LAST:event_jTextField11KeyReleased
@@ -1024,13 +1024,13 @@ public class GRN extends javax.swing.JPanel {
             int selectedRow = jTable2.getSelectedRow();
             if (selectedRow != -1) {
                 String grnId = jTable2.getValueAt(selectedRow, 0).toString();
-                
+
                 try {
                     ResultSet grnRs = MySQL.search("SELECT * FROM `grn` INNER JOIN `grn_item` ON `grn`.`id` = `grn_item`.`grn_id` INNER JOIN `stock` ON `grn_item`.stock_id = stock.id INNER JOIN `product` ON `stock`.product_id  = product.id INNER JOIN `category` ON product.category_id = category.id INNER JOIN `brand` ON product.brand_id = brand.id WHERE `grn`.id = '" + grnId + "'");
-                    
+
                     Vector v = new Vector();
                     while (grnRs.next()) {
-                        
+
                         String productId = grnRs.getString("product.id");
                         String productName = grnRs.getString("product.name");
                         String category = grnRs.getString("category.name");
@@ -1038,11 +1038,11 @@ public class GRN extends javax.swing.JPanel {
                         String quantity = grnRs.getString("grn_item.quantity");
                         double total = Double.parseDouble(grnRs.getString("grn_item.buying_price")) * Integer.parseInt(grnRs.getString("grn_item.quantity"));
                         v.add(new GRNReport(productId, productName, grnRs.getString("grn_item.buying_price"), quantity, String.valueOf(total)));
-                        
+
                     }
-                    
+
                     ResultSet grnRs2 = MySQL.search("SELECT * FROM `grn` INNER JOIN `grn_payment` ON `grn`.`id` = `grn_payment`.`grn_id` INNER JOIN `supplier` ON `grn`.supplier_id = supplier.id INNER JOIN `company_branch` ON `company_branch`.id = supplier.company_branch_id INNER JOIN `company` ON `company_branch`.`company_id` = `company`.`id` WHERE `grn`.id = '" + grnId + "'");
-                    
+
                     if (grnRs2.next()) {
                         HashMap parameters = new HashMap();
                         parameters.put("Parameter1", grnId);
@@ -1056,12 +1056,12 @@ public class GRN extends javax.swing.JPanel {
 
                         InputStream report = GRN.class.getResourceAsStream("/reports/sp_grn.jasper");
                         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(v);
-                        
+
                         JasperPrint jp = JasperFillManager.fillReport(report, parameters, dataSource);
                         JasperViewer.viewReport(jp, false);
-                        
+
                     }
-                    
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

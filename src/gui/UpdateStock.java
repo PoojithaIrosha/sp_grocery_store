@@ -175,7 +175,7 @@ public class UpdateStock extends javax.swing.JDialog {
             }
 
             home.manageStock.loadStock();
-            
+
             JOptionPane.showMessageDialog(this, "Stock Updated Successfully", "Message", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
 
@@ -215,12 +215,6 @@ public class UpdateStock extends javax.swing.JDialog {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 UpdateStock dialog = new UpdateStock(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
                 dialog.setVisible(true);
             }
         });

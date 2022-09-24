@@ -41,12 +41,6 @@ public class ManageSuppliers extends javax.swing.JPanel {
         loadCompanies();
         loadCities();
         loadCompanyBranches();
-        ;
-    }
-
-    // TODO: Clear All Fields
-    public void clearFields() {
-
     }
 
     public void loadSuppliers() {
@@ -973,6 +967,12 @@ public class ManageSuppliers extends javax.swing.JPanel {
 
         jLabel40.setText("Contact No");
 
+        jTextField17.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField17KeyTyped(evt);
+            }
+        });
+
         jLabel39.setText("Email");
 
         jLabel41.setText("Branch ID");
@@ -1411,7 +1411,7 @@ public class ManageSuppliers extends javax.swing.JPanel {
                     JREmptyDataSource dataSource = new JREmptyDataSource();
 
                     InputStream report = ManageSuppliers.class.getResourceAsStream("/reports/sp_supplier.jasper");
-                    
+
                     jTextField1.setText("");
                     jTextField2.setText("");
                     jTextField3.setText("");
@@ -1424,7 +1424,7 @@ public class ManageSuppliers extends javax.swing.JPanel {
 
                     loadSuppliers();
                     JOptionPane.showMessageDialog(this, "New Supplier Added Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    
+
                     JasperPrint jp = JasperFillManager.fillReport(report, parameters, dataSource);
                     JasperViewer.viewReport(jp, false);
                 }
@@ -1539,7 +1539,7 @@ public class ManageSuppliers extends javax.swing.JPanel {
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         // TODO add your handling code here:
 
-        // Supplier Registration
+// Supplier Registration
         jTextField1.setText("");
         jTextField2.setText("");
         jTextField3.setText("");
@@ -1551,17 +1551,17 @@ public class ManageSuppliers extends javax.swing.JPanel {
         jLabel15.setText("None");
         jLabel16.setText("None");
         jComboBox1.setSelectedIndex(0);
-        // Supplier Registration
+// Supplier Registration
 
-        // Company Registration
+// Company Registration
         jTextField5.setText("");
         jTextField6.setText("");
         jTextField7.setText("");
         jTextField12.setText("");
         jComboBox3.setSelectedIndex(0);
-        // Company Registration
+// Company Registration
 
-        // Branch Registration
+// Branch Registration
         jTextField8.setText("");
         jTextField9.setText("");
         jTextField10.setText("");
@@ -1570,16 +1570,16 @@ public class ManageSuppliers extends javax.swing.JPanel {
         jLabel33.setText("None");
         jLabel34.setText("None");
         jComboBox4.setSelectedIndex(0);
-        // Branch Registration
+// Branch Registration
 
-        // Update Supplier Section
+// Update Supplier Section
         jTextField14.setText("");
         jTextField15.setText("");
         jTextField17.setText("");
         jTextField16.setText("");
         jLabel42.setText("None");
         jLabel44.setText("None");
-        // Update Supplier Section
+// Update Supplier Section
 
     }//GEN-LAST:event_jButton9ActionPerformed
 
@@ -1636,7 +1636,7 @@ public class ManageSuppliers extends javax.swing.JPanel {
                     parameters.put("Parameter5", rs.getString("company.name"));
                     parameters.put("Parameter6", rs.getString("company.company_email"));
                     parameters.put("Parameter7", rs.getString("company_branch.name"));
-                    String branchAddress = rs.getString("company_branch_address.line1") + ", " + rs.getString("company_branch_address.line2") + ", "+ rs.getString("city.city_name");
+                    String branchAddress = rs.getString("company_branch_address.line1") + ", " + rs.getString("company_branch_address.line2") + ", " + rs.getString("city.city_name");
                     parameters.put("Parameter8", branchAddress);
 
                     JREmptyDataSource dataSource = new JREmptyDataSource();
@@ -1676,6 +1676,31 @@ public class ManageSuppliers extends javax.swing.JPanel {
             evt.consume();
         }
     }//GEN-LAST:event_jTextField2KeyTyped
+
+    private void jTextField17KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField17KeyTyped
+        // TODO add your handling code here:
+        String text = jTextField17.getText() + evt.getKeyChar();
+
+        if (text.length() == 1) {
+            if (!text.equals("0")) {
+                evt.consume();
+            }
+        } else if (text.length() == 2) {
+            if (!text.equals("07")) {
+                evt.consume();
+            }
+        } else if (text.length() == 3) {
+            if (!Pattern.compile("07[1|2|4|5|6|7|8|0]").matcher(text).matches()) {
+                evt.consume();
+            }
+        } else if (text.length() <= 10) {
+            if (!Pattern.compile("07[1|2|4|5|6|7|8|0][0-9]+").matcher(text).matches()) {
+                evt.consume();
+            }
+        } else {
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField17KeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

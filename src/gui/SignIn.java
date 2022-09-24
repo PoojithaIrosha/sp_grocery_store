@@ -295,12 +295,6 @@ public class SignIn extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        // Look & Feel
-        try {
-            IntelliJTheme.setup(SignIn.class.getResourceAsStream("/resources/arc-theme.theme.json"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {

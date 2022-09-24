@@ -1002,6 +1002,15 @@ public class ManageProducts extends javax.swing.JPanel {
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
+        jTextField14.setText("");
+        jTextField9.setText("");
+        jTextField10.setText("None");
+        jTextField13.setText("None");
+        jTextField11.setText("None");
+        jTextField12.setText("None");
+
+        jTabbedPane1.setEnabledAt(2, false);
+        jTabbedPane1.setSelectedIndex(0);
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
@@ -1019,17 +1028,17 @@ public class ManageProducts extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Please select a brand", "Message", JOptionPane.WARNING_MESSAGE);
         } else {
             MySQL.iud("UPDATE `product` SET `name` = '" + productName + "', `category_id` = '" + categoryId + "', `brand_id` = '" + brandId + "' WHERE `id` = '" + productId + "'");
-            
+
             jTextField14.setText("");
             jTextField9.setText("");
             jTextField10.setText("None");
             jTextField11.setText("None");
             jTextField12.setText("None");
             jTextField13.setText("None");
-            
+
             loadProducts();
             JOptionPane.showMessageDialog(this, "Product updated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-            
+
             jTabbedPane1.setSelectedIndex(0);
             jTabbedPane1.setEnabledAt(2, false);
         }

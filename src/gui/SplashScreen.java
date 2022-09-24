@@ -21,11 +21,15 @@ public class SplashScreen extends javax.swing.JFrame {
     public SplashScreen() {
         initComponents();
 
-        // Set Application  Icon
-        Application application = Application.getApplication();
-        Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/cart.png"));
-        application.setDockIconImage(image);
+        setAppIcon();
     }
+    
+public void setAppIcon() {
+    // Set Application  Icon
+    Application application = Application.getApplication();
+    Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/cart.png"));
+    application.setDockIconImage(image);
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -130,6 +134,7 @@ public class SplashScreen extends javax.swing.JFrame {
         try {
             IntelliJTheme.setup(Home.class.getResourceAsStream("/resources/arc-theme.theme.json"));
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
 

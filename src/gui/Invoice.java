@@ -73,7 +73,6 @@ public class Invoice extends javax.swing.JPanel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public void updateTotal() {
@@ -113,6 +112,33 @@ public class Invoice extends javax.swing.JPanel {
         jTextField8.setText("None");
         jTextField9.setText("None");
         jTextField10.setText("None");
+    }
+
+    public void searchInvoice(String text) {
+        try {
+            ResultSet invoice_rs = MySQL.search("SELECT * FROM `invoice` INNER JOIN `user` ON `invoice`.`user_id` = `user`.`id` INNER JOIN `invoice_payment` ON `invoice_payment`.`invoice_id` = `invoice`.`id` INNER JOIN `payment_type` ON `invoice_payment`.`payment_type_id` = `payment_type`.`id` WHERE `invoice`.`date_time` LIKE '%" + text + "%'");
+            DefaultTableModel dtm = (DefaultTableModel) jTable2.getModel();
+            dtm.setRowCount(0);
+
+            while (invoice_rs.next()) {
+                Vector v = new Vector();
+
+                v.add(invoice_rs.getString("invoice.id"));
+                v.add(invoice_rs.getString("user.name"));
+                v.add(invoice_rs.getString("invoice.date_time"));
+                v.add(invoice_rs.getString("payment_type.name"));
+                double total = Double.parseDouble(invoice_rs.getString("invoice_payment.payment")) - Double.parseDouble(invoice_rs.getString("invoice_payment.balance"));
+                v.add(total);
+                v.add(invoice_rs.getString("invoice_payment.payment"));
+                v.add(invoice_rs.getString("invoice_payment.balance"));
+
+                dtm.addRow(v);
+            }
+
+            jTable2.setModel(dtm);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -538,9 +564,9 @@ public class Invoice extends javax.swing.JPanel {
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel21.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
-        jLabel21.setText("View GRNs");
+        jLabel21.setText("View Invoices");
 
-        jLabel3.setText("Search GRN :");
+        jLabel3.setText("Search Invoice :");
 
         jDateChooser3.setDateFormatString("yyyy-MM-dd");
         jDateChooser3.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -934,7 +960,7 @@ public class Invoice extends javax.swing.JPanel {
             if (date == null) {
                 loadInvoices();
             } else {
-//                searchGrns(sdf.format(date));
+                searchInvoice(sdf1.format(date));
             }
         }
     }//GEN-LAST:event_jDateChooser3PropertyChange

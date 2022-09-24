@@ -21,62 +21,62 @@ public class SelectSupplier extends javax.swing.JDialog {
     /**
      * Creates new form SelectSupplier
      */
-    public SelectSupplier(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        initComponents();
+public SelectSupplier(java.awt.Frame parent, boolean modal) {
+    super(parent, modal);
+    initComponents();
 
-        // Custom Code
-        this.home = (Home) parent;
-        loadSuppliers();
-    }
+    // Custom Code
+    this.home = (Home) parent;
+    loadSuppliers();
+}
 
-    public void loadSuppliers() {
-        try {
+public void loadSuppliers() {
+    try {
 
-            DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
-            dtm.setRowCount(0);
+        DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+        dtm.setRowCount(0);
 
-            ResultSet rs = MySQL.search("SELECT * FROM `supplier` INNER JOIN `company_branch` ON `supplier`.`company_branch_id` = `company_branch`.`id` INNER JOIN `company` ON `company_branch`.`company_id` = `company`.`id` ORDER BY `supplier`.`id` ASC");
+        ResultSet rs = MySQL.search("SELECT * FROM `supplier` INNER JOIN `company_branch` ON `supplier`.`company_branch_id` = `company_branch`.`id` INNER JOIN `company` ON `company_branch`.`company_id` = `company`.`id` ORDER BY `supplier`.`id` ASC");
 
-            while (rs.next()) {
-                Vector v = new Vector();
-                v.add(rs.getString("supplier.id"));
-                v.add(rs.getString("supplier.name"));
-                v.add(rs.getString("supplier.contact_no"));
-                v.add(rs.getString("supplier.email"));
-                v.add(rs.getString("company.name"));
-                v.add(rs.getString("company_branch.name"));
-                v.add(rs.getString("company_branch.contact_no"));
-                dtm.addRow(v);
-            }
-            jTable1.setModel(dtm);
-        } catch (Exception e) {
+        while (rs.next()) {
+            Vector v = new Vector();
+            v.add(rs.getString("supplier.id"));
+            v.add(rs.getString("supplier.name"));
+            v.add(rs.getString("supplier.contact_no"));
+            v.add(rs.getString("supplier.email"));
+            v.add(rs.getString("company.name"));
+            v.add(rs.getString("company_branch.name"));
+            v.add(rs.getString("company_branch.contact_no"));
+            dtm.addRow(v);
         }
+        jTable1.setModel(dtm);
+    } catch (Exception e) {
     }
+}
 
-    public void searchSuppliers(String text, String category) {
-        try {
-            DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
-            dtm.setRowCount(0);
+public void searchSuppliers(String text, String category) {
+    try {
+        DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+        dtm.setRowCount(0);
 
-            ResultSet rs = MySQL.search("SELECT * FROM `supplier` INNER JOIN `company_branch` ON `supplier`.`company_branch_id` = `company_branch`.`id` INNER JOIN `company` ON `company_branch`.`company_id` = `company`.`id` WHERE " + category + " LIKE '%" + text + "%' ORDER BY `supplier`.`id` ASC");
-            while (rs.next()) {
-                Vector v = new Vector();
-                v.add(rs.getString("supplier.id"));
-                v.add(rs.getString("supplier.name"));
-                v.add(rs.getString("supplier.contact_no"));
-                v.add(rs.getString("supplier.email"));
-                v.add(rs.getString("company.name"));
-                v.add(rs.getString("company_branch.name"));
-                v.add(rs.getString("company_branch.contact_no"));
-                dtm.addRow(v);
-            }
-            jTable1.setModel(dtm);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        ResultSet rs = MySQL.search("SELECT * FROM `supplier` INNER JOIN `company_branch` ON `supplier`.`company_branch_id` = `company_branch`.`id` INNER JOIN `company` ON `company_branch`.`company_id` = `company`.`id` WHERE " + category + " LIKE '%" + text + "%' ORDER BY `supplier`.`id` ASC");
+        while (rs.next()) {
+            Vector v = new Vector();
+            v.add(rs.getString("supplier.id"));
+            v.add(rs.getString("supplier.name"));
+            v.add(rs.getString("supplier.contact_no"));
+            v.add(rs.getString("supplier.email"));
+            v.add(rs.getString("company.name"));
+            v.add(rs.getString("company_branch.name"));
+            v.add(rs.getString("company_branch.contact_no"));
+            dtm.addRow(v);
         }
+        jTable1.setModel(dtm);
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -205,45 +205,45 @@ public class SelectSupplier extends javax.swing.JDialog {
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
-        if (evt.getClickCount() == 2) {
-            int selectedRow = jTable1.getSelectedRow();
-            if (selectedRow != -1) {
-                String supplierId = jTable1.getValueAt(selectedRow, 0).toString();
-                String supplierName = jTable1.getValueAt(selectedRow, 1).toString();
+if (evt.getClickCount() == 2) {
+    int selectedRow = jTable1.getSelectedRow();
+    if (selectedRow != -1) {
+        String supplierId = jTable1.getValueAt(selectedRow, 0).toString();
+        String supplierName = jTable1.getValueAt(selectedRow, 1).toString();
 
-                this.home.grn.jTextField1.setText(supplierId);
-                this.home.grn.jTextField2.setText(supplierName);
+        this.home.grn.jTextField1.setText(supplierId);
+        this.home.grn.jTextField2.setText(supplierName);
 
-                this.dispose();
-            }
-        }
+        this.dispose();
+    }
+}
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
         // TODO add your handling code here:
-        String text = jTextField4.getText();
-        String c = jComboBox1.getSelectedItem().toString();
+String text = jTextField4.getText();
+String c = jComboBox1.getSelectedItem().toString();
 
-        String category;
+String category;
 
-        switch (c) {
-            case "Contact No":
-                category = "`supplier`.`contact_no`";
-                break;
-            case "Email":
-                category = "`supplier`.`email`";
-                break;
-            case "Branch Name":
-                category = "`company_branch`.`name`";
-                break;
-            case "Company":
-                category = "`company`.`name`";
-                break;
-            default:
-                category = "`supplier`.`name`";
-        }
+switch (c) {
+    case "Contact No":
+        category = "`supplier`.`contact_no`";
+        break;
+    case "Email":
+        category = "`supplier`.`email`";
+        break;
+    case "Branch Name":
+        category = "`company_branch`.`name`";
+        break;
+    case "Company":
+        category = "`company`.`name`";
+        break;
+    default:
+        category = "`supplier`.`name`";
+}
 
-        searchSuppliers(text, category);
+searchSuppliers(text, category);
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
     private void jTextField4KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField4KeyReleased

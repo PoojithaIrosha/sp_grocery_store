@@ -224,7 +224,7 @@ public class SelectProduct extends javax.swing.JDialog {
         String text = jTextField8.getText();
 
         String c = jComboBox1.getSelectedItem().toString();
-        String category = "";
+        String category;
 
         switch (c) {
             case "Brand":
@@ -243,19 +243,19 @@ public class SelectProduct extends javax.swing.JDialog {
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
-        if(evt.getClickCount() == 2) {
+        if (evt.getClickCount() == 2) {
             int selectedRow = jTable1.getSelectedRow();
-            if(selectedRow != -1) {
+            if (selectedRow != -1) {
                 String pid = jTable1.getValueAt(selectedRow, 0).toString();
                 String pname = jTable1.getValueAt(selectedRow, 1).toString();
                 String cname = jTable1.getValueAt(selectedRow, 2).toString();
                 String bname = jTable1.getValueAt(selectedRow, 3).toString();
-                
+
                 this.home.grn.jTextField3.setText(pid);
                 this.home.grn.jTextField4.setText(pname);
                 this.home.grn.jTextField5.setText(bname);
                 this.home.grn.jTextField6.setText(cname);
-                
+
                 this.dispose();
             }
         }
